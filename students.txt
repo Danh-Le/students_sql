@@ -1,8 +1,9 @@
-C:\Users\ASF
+(**C:\Users\ASF
 λ mysql
 Enter password: *****
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 14
+
 BASE DE DONNEES:
 
 mysql> CREATE DATABASE school
@@ -374,3 +375,141 @@ mysql> SELECT name
 | Nour      |
 +-----------+
 2 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*)
+    -> FROM students
+    -> WHERE city = "Paris";
++----------+
+| COUNT(*) |
++----------+
+|        3 |
++----------+
+1 row in set (0.01 sec)
+
+RAPPORT LEVEL 3:
+
+mysql> SELECT *
+    -> FROM students
+    -> INNER JOIN students_languages ON students_languages.student_id = students.id
+    -> INNER JOIN languages ON languages.id = students_languages.languages_id
+    -> WHERE students.id = 1;
++----+-----------+-------+----+------------+--------------+----+---------+
+| id | name      | city  | id | student_id | languages_id | id | name    |
++----+-----------+-------+----+------------+--------------+----+---------+
+|  1 | Véronique | Paris |  1 |          1 |            1 |  1 | French  |
+|  1 | Véronique | Paris |  2 |          1 |            2 |  2 | English |
++----+-----------+-------+----+------------+--------------+----+---------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT *
+    -> FROM students
+    -> INNER JOIN students_languages ON students_languages.student_id = students.id
+    -> INNER JOIN languages ON languages.id = students_languages.languages_id
+    -> WHERE students.id = 4;
++----+------+------+----+------------+--------------+----+----------+
+| id | name | city | id | student_id | languages_id | id | name     |
++----+------+------+----+------------+--------------+----+----------+
+|  4 | Nour | Lyon |  6 |          4 |            1 |  1 | French   |
+|  4 | Nour | Lyon |  7 |          4 |            2 |  2 | English  |
+|  4 | Nour | Lyon |  8 |          4 |            4 |  4 | Spanish  |
+|  4 | Nour | Lyon |  9 |          4 |            5 |  5 | Mandarin |
++----+------+------+----+------------+--------------+----+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT languages.name, students.name
+    -> FROM students
+    -> INNER JOIN students_languages ON students_languages.student_id = students.id
+    -> INNER JOIN languages ON languages.id = students_languages.languages_id
+    -> WHERE students.id = 5;
++----------+--------+
+| name     | name   |
++----------+--------+
+| French   | Romain |
+| Mandarin | Romain |
++----------+--------+
+2 rows in set (0.00 sec)
+
+RAPPORT LEVEL 4:
+
+mysql> UPDATE students
+    -> SET name = "Benoit"
+    -> WHERE id = 4;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM students;
++----+-----------+-----------+
+| id | name      | city      |
++----+-----------+-----------+
+|  1 | Véronique | Paris     |
+|  2 | Steeven   | Lyon      |
+|  3 | Marc      | Marseille |
+|  4 | Benoit    | Lyon      |
+|  5 | Romain    | Paris     |
+|  6 | Sophie    | Paris     |
++----+-----------+-----------+
+6 rows in set (0.00 sec)
+
+mysql> UPDATE students
+    -> SET city = "Bordeaux"
+    -> WHERE id = 1;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM students;
++----+-----------+-----------+
+| id | name      | city      |
++----+-----------+-----------+
+|  1 | Véronique | Bordeaux  |
+|  2 | Steeven   | Lyon      |
+|  3 | Marc      | Marseille |
+|  4 | Benoit    | Lyon      |
+|  5 | Romain    | Paris     |
+|  6 | Sophie    | Paris     |
++----+-----------+-----------+
+6 rows in set (0.00 sec)
+
+!!
+mysql> DELETE FROM students
+    -> WHERE id = 2;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`school`.`favorites`, CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`))
+!!
+
+mysql> SELECT * FROM students
+    -> WHERE name LIKE '%e%';
++----+-----------+----------+
+| id | name      | city     |
++----+-----------+----------+
+|  1 | Véronique | Bordeaux |
+|  2 | Steeven   | Lyon     |
+|  4 | Benoit    | Lyon     |
+|  6 | Sophie    | Paris    |
++----+-----------+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT students.id, students.name, favorites.sport FROM students
+    -> INNER JOIN favorites ON favorites.student_id = students.id
+    -> WHERE name LIKE '%e%';
++----+-----------+----------+
+| id | name      | sport    |
++----+-----------+----------+
+|  1 | Véronique | Boxing   |
+|  2 | Steeven   | Cricket  |
+|  4 | Benoit    | Baseball |
+|  6 | Sophie    | Hip-Hop  |
++----+-----------+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT students.id, students.name, favorites.class FROM students
+    -> INNER JOIN favorites ON favorites.student_id = students.id
+    -> WHERE city LIKE '%i%';
++----+--------+------------------+
+| id | name   | class            |
++----+--------+------------------+
+|  3 | Marc   | Literature       |
+|  5 | Romain | Computer science |
+|  6 | Sophie | Music            |
++----+--------+------------------+
+3 rows in set (0.00 sec)
+
+Bye!
